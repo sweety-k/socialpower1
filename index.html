@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title></title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css">
+    <style>      
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-inverse">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="#">Home</a>
+    </div>
+    <div class="collapse navbar-collapse" id="myNavbar">
+      <ul class="nav navbar-nav">
+        <li class="active"><a href="#"></a></li>
+        <li><a href="#"></a></li>
+        <li><a href="#"></a></li>
+        <li><a href="#"></a></li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      <div id="d_followers"></div>
+      <div id="d_tweets"></div>
+      <div id="d_favorites"></div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div id="d_followers_hr_bars"></div>
+    </div>
+  </div>
+</div>
+
+<script id="followers_count" type="text/html">  
+  <div class="element-item" style="background-color:white;width:100px">
+    <p class="modipic"><img src="img/<%=user%>.jpg" class="img-rounded" width="100%" height="100%" /></p>
+  </div>
+  <div class="element-item">
+    <div class="followers-header">Twitter Followers </div>
+    <div id="followers" class="followers-number"><%=total%></div>
+    <div class="today-followers-header">Today</div>
+    <div id="todaysfollowers" class="today-followers-number"><%=today%></div>
+    <div class="daily-avg-followers-header">Daily Avg</div>
+    <div class="daily-avg-followers" id="avgfollowers"><%=daily_avg%></div>
+    <div class="lineone"> </div>
+    <div class="linetwo"> </div>
+  </div>
+</script>
+
+<script id="tweets_count" type="text/html">
+  <div class="element-item" style="background-color:#006AA4;width:250px;">
+    <div class="followers-header">Tweets </div>
+    <div id="tweetsnumber" class="tweets-number"><%=total%></div>
+    <div class="today-tweets-header">Today</div>
+    <div class="daily-avg-tweets-header">Daily Avg</div>
+    <div class="today-tweets-number"><%=today%></div>
+    <div class="daily-avg-tweets"><%=daily_avg%></div>
+    <div class="lineone"> </div>
+    <div class="linetwo"> </div>
+  </div>
+</script>
+
+<script id="favorites_count" type="text/html">
+  <div class="element-item" style="background-color:white;width:350px;color:black">
+    <div class="retweets-icon" style="padding-left:20px; padding-top:12px;">
+      <img src="img/retweet_icon.svg" width="40" height="40">
+    </div>
+    <div class="favorites-icon" style="padding-left:26px; padding-top:15px;">
+      <img src="img/favorite_icon.svg" width="30" height="30">
+    </div>
+    <div class="avg-retweet-per-tweet">Avg retweets per tweet</div>
+    <div class="avg-favorites-per-tweet">Avg favorites per tweet</div>
+    <div class="linethree"> </div>
+    <div class="retweets-avg"><%=avg_retweets%></div>
+    <div class="favorites-avg"><%=avg_favorites%></div>
+  </div>
+</script>
+
+<script id="" type="text/html">
+
+</script>
+
+<script id="" type="text/html">
+  <h1>Top followers of <%= name %></h1>
+  <ul>
+    <% for (var follower_name in followers) { %>
+        <li><%= follower_name %>: <%= followers[follower_name] %> tweets</li>
+    <% } %>
+  </ul>
+</script>
+
+<script src="bower_components/jquery/dist/jquery.min.js"></script>
+<script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+<script src="bower_components/d3/d3.min.js"></script>
+<script src="bower_components/underscore/underscore-min.js"></script>
+<script src="bower_components/countUp.js/dist/countUp.min.js"></script>
+
+<script>
+  var current_date = new Date(),
+      prev_date = new Date();
+      prev_date.setDate(prev_date.getDate() - 1),
+      f_count = _.template($('#followers_count').html()),
+      t_count = _.template($('#tweets_count').html()),
+      fv_count = _.template($('#favorites_count').html()),
+      user = decodeURIComponent(window.location.search.split('=')[1]),
+      round = d3.format(".0f");    
+
+  function convertTime(serverdate) { return new Date(serverdate + " UTC"); }
+  function shortDate(d){ return d3.time.format("%d-%b-%y")(d); }
+  
+  $.getJSON('data/'+user+'_hourwise7.js')
+    .done(function(data){
+      followers_data = {}, followers_average = [], tweets_data = {}, tweets_average = [];
+      data = _.sortBy(data, 'date-time');
+      data.map(function(d){ return d['dateTime'] = convertTime(d['date-time']); });
+      
+      groupby_date = _.groupBy(data, function(d){ return shortDate(d['dateTime']); });
+      _.values(groupby_date).map(function(d, i){ 
+          first = d[0]; 
+          last = d.slice(-1)[0];
+          followers_average.push(last['followers'] - first['followers']);
+          tweets_average.push(last['tweets'] - first['tweets']);    
+          if(shortDate(d[0]['dateTime']) == shortDate(prev_date)){
+            prev_f = d.slice(-1)[0];
+          }
+          if(shortDate(d[0]['dateTime']) == shortDate(current_date)){
+            today_first = d[0];
+            today_last = d.slice(-1)[0];
+            today_data = d;
+            today_data.unshift(prev_f);
+          }      
+      });
+
+      followers_data['user'] = f1 = user;
+      followers_data['total'] = typeof today_last != 'undefined' ? today_last['followers'] : prev_f['followers'];
+      followers_data['today'] = typeof today_last != 'undefined' ? today_last['followers'] - today_first['followers'] :0;
+      followers_data['daily_avg'] = round(d3.mean(followers_average));
+
+      $('#d_followers').html(f_count(followers_data));
+
+      tweets_data['total'] = typeof today_last != 'undefined' ? today_last['tweets'] : prev_f['tweets'];
+      tweets_data['today'] = typeof today_last != 'undefined' ? today_last['tweets'] - today_first['tweets'] :0;
+      tweets_data['daily_avg'] = round(d3.mean(tweets_average));
+
+      $('#d_tweets').html(t_count(tweets_data));      
+
+      followers_hr = {};
+      if(typeof today_data != 'undefined'){
+        _.range(today_data.length).map(function(d){
+          if(d < today_data.length-1){
+            followers_hr[today_data[d+1]['dateTime']] = today_data[d+1]['followers'] - today_data[d]['followers'];
+          }        
+        });
+        console.log(followers_hr);  
+      }
+
+    });
+
+  $.getJSON('data/'+user+'_tweets.js')
+    .done(function(data){
+      favorites_data = {};
+      data = _.sortBy(data, 'created_at');
+      favorites_data['avg_retweets'] = round(d3.mean(_.pluck(data, 'retweet_count')));
+      favorites_data['avg_favorites'] = round(d3.mean(_.pluck(data, 'favorite_count')));
+      
+      $('#d_favorites').html(fv_count(favorites_data));
+
+    });    
+</script>
+<script>
+  var options = {
+      useEasing : true,
+      useGrouping : true,
+      separator : ',',
+      decimal : '.',
+      prefix : '',
+      suffix : ''
+    };    
+
+    //console.log(d3.select('#followers'));
+    //var followers = new CountUp("followers", 0, followers_data['total'], 0, 3.5, options);
+    
+    // var today_followers = new CountUp("todaysfollowers", 0, {{sum(todays_followers)}}, 0, 3.5, options);
+    // var avg_followers = new CountUp("avgfollowers", 0, {{sofar}}, 0, 3.5, options);
+    // var tweets = new CountUp("tweetsnumber", 0, {{todays_data['tweets'][-1]}}, 0, 3.5, options);
+    // followers.start();
+    // today_followers.start();
+    // tweets.start();
+    // avg_followers.start();      
+</script>
+</body>
+</html>

@@ -1,0 +1,276 @@
+/* The main logo is displayed on the top left of the page */
+.main-logo {
+  float: left;
+  height: 50px;         /* Take up the full height of the navbar */
+  margin-right: 15px;   /* Just add a bit of padding between the logo and the rest of the stuff to its right */
+  margin-bottom: -45px;
+  border-radius: 50%;
+  background-color: white;
+  -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+  box-shadow: 0 0 8px rgba(85, 172, 238, 1);
+-webkit-box-shadow: 0 0 8px rgba(85, 172, 238, 1);
+-moz-box-shadow: 0 0 8px rgba(85, 172, 238, 1);
+z-index: 2;
+margin-top: 22.5px;
+}
+.container{
+  max-width:1200px;
+}
+.calendarmap text { font: 11px "Trebuchet MS", sans-serif; pointer-events: none; }
+.calendarmap .select { stroke-width: 2; stroke: #000; }
+.treemap rect { stroke: rgba(0,0,0,.3); }
+h1 .legend { font: normal 12px Georgia, serif; }
+.table td, .table th { text-align: right; }
+.table .nopad { padding: 0; }
+.se-pre-con {
+  position: fixed;
+  left: 0px;
+  top: 0px;
+  width: 100%;
+  height: 100%;
+  z-index: 9999;
+  background: url('Preloader_3.gif') center no-repeat #fff;
+}
+body { 
+font-family: "Segoe UI", Frutiger, "Frutiger Linotype", "Dejavu Sans", "Helvetica Neue", Arial, sans-serif;
+font-size: 155%; 
+}
+h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif }
+h4{
+  color:#636363;
+  }
+.dropcap { font-size: 3em; float: left; line-height: .95; font-weight: bold; margin-right: 3px; }
+.display:hover{
+  border-bottom: 1px dotted red; text-decoration: none;
+  color:black;
+}
+.retweet-container {
+    width: 500px;
+    height: 350px;
+    overflow-x: hidden;
+}
+.active{
+  color:red;
+}
+.select { stroke-width: 2; stroke: #000; opacity:1;}
+/* Social media icons are added into a .navbar in the footer */
+.navbar-nav>li>a{
+  height: 20px;                 /* Set the height */
+  color: #ffffff !important;
+  padding: 15px 20px 20px 20px; 
+}
+.social-media-icon:hover path {
+  fill: #5b9bd5;                /* Hover over the icon to get an Office 2013 blue */
+}
+.navbar {
+  background-color: #FA861F;
+  margin-top: -15px;
+}
+#modititle, #pushdown{
+  /*margin-bottom: -45px;*/
+  z-index: 2;
+  /*margin-top: 10px;*/
+  color: #fff;
+}
+
+/* Utility class that makes text immune to pointer events -- hover, click, etc.
+   Most charts (except wordcloud) should have this class on the SVG. */
+.element-item {
+  position: relative;
+  float: left;
+  width: 350px;
+  height: 100px;
+  margin: 5px;
+  padding: 10px;
+  background-color: #38AAE1;
+  border-radius: 10px;
+}
+.element-item .lineone{
+ height: 94px;
+ border-left: 1px dotted #fff;
+ position: absolute;
+ top: 2px;
+ right: 101px;
+}
+.element-item .linetwo{
+ width: 100px;
+ border-top: 1px dotted #fff;
+ position: absolute;
+ top: 48px;
+ right: 2px;
+}
+.element-item .linethree{
+ width: 350px;
+ border-top: 1px dotted #38AAE1;
+ position: absolute;
+ top: 48px;
+ left: 0px;
+}
+.followers-header {
+  position: absolute;
+  left: 10px;
+  top: 5px;
+  font-size: 20px;
+  font-weight: normal;
+  color:#fff;
+}
+.followers-number {
+  position: absolute;
+  left: 10px;
+  top: 45px;
+  font-size: 32px;
+  font-weight: normal;
+  text-transform: uppercase;
+  color:#fff;
+}
+.today-followers-header {
+  position: absolute;
+  left: 262.5px;
+  top: 10px;
+  font-size: 12px;
+  font-weight: normal;
+  color:#fff;
+}
+.today-tweets-header {
+  position: absolute;
+  left: 162.5px;
+  top: 10px;
+  font-size: 12px;
+  font-weight: normal;
+  color:#fff;
+}
+.today-followers-number {
+  position: absolute;
+  left: 262.5px;
+  top: 27.5px;
+  font-size: 13px;
+  font-weight: normal;
+  text-transform: uppercase;
+  text-align: right;
+  color:#fff;
+}
+.daily-avg-followers {
+  position: absolute;
+  left: 262.5px;
+  top: 69.5px;
+  font-size: 13px;
+  font-weight: normal;
+  text-transform: uppercase;
+  color:#fff;
+}
+.daily-avg-followers-header {
+  position: absolute;
+  left: 262.5px;
+  top: 52.5px;
+  font-size: 12px;
+  font-weight: normal;
+  color:#fff;
+}
+.daily-avg-tweets-header {
+  position: absolute;
+  left: 162.5px;
+  top: 52.5px;
+  font-size: 12px;
+  font-weight: normal;
+  color:#fff;
+}
+.tweets-number {
+  position: absolute;
+  left: 10px;
+  top: 45px;
+  font-size: 32px;
+  font-weight: normal;
+  text-transform: uppercase;
+  color:#fff;
+}
+.retweets-icon {
+  position: absolute;
+  left: 0px;
+  top: -5px;
+}
+.favorites-icon {
+  position: absolute;
+  left: 0px;
+  top: 45px;
+}
+.retweets-avg {
+  position: absolute;
+  left: 70px;
+  top: 5px;
+  font-size: 32px;
+  color:#55ACEE;
+}
+.favorites-avg {
+  position: absolute;
+  left: 70px;
+  top: 55px;
+  font-size: 32px;
+  color:#E23459;
+}
+.avg-retweet-per-tweet {
+  position: absolute;
+  left: 150px;
+  top: 27.5px;
+  font-size: 13px;
+  font-weight: normal;
+}
+.avg-favorites-per-tweet {
+  position: absolute;
+  left: 150px;
+  bottom: 4px;
+  font-size: 13px;
+  font-weight: normal;
+}
+.today-tweets-number {
+  position: absolute;
+  left: 162.5px;
+  top: 27.5px;
+  font-size: 13px;
+  font-weight: normal;
+  text-align: right;
+  color:#fff;
+}
+.daily-avg-tweets {
+  position: absolute;
+  left: 162.5px;
+  top: 69.5px;
+  font-size: 13px;
+  font-weight: normal;
+  color:#fff;
+}
+.element-item .modipic {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+}
+.btn:hover, .btn:focus, .btn:active, .btn.active, .open .dropdown-toggle.btn-primary {
+
+  background-color: #FA861F;
+ }
+.btn
+{
+  background-color: #ffffff;
+}
+.twts_stroke{
+ stroke:#000;
+ stroke-width:2px;
+}
+.twts_stroke_not{
+ stroke:none;
+ stroke-width:0;
+}
+/* Define a .navbar-static-bottom for the footer just like .navbar-static-top */
+@media (min-width: 768px) {
+  .navbar-static-bottom {
+    border-radius: 0;
+  }
+  .navbar-static-bottom {
+    z-index: 1000;
+    border-width: 1px 0 0;
+    margin-bottom: 0;
+    margin-top: 20px;
+  }
+  
+}
+{% end %}
