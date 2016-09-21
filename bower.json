@@ -1,0 +1,28 @@
+{
+  "name": "socialpower1",
+  "description": "",
+  "main": "",
+  "moduleType": [],
+  "license": "UNLICENSED",
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components"
+  ],
+  "dependencies": {
+    "bootstrap": "",
+    "jquery-ui": "",
+    "font-awesome": "",
+    "jquery": "",
+    "d3": "d3#3.5.17",
+    "g": "http://code.gramener.com/s.anand/g.git",
+    "datatables.net-bs": "^1.10.12",
+    "underscore": "~1.8.3",
+    "d3-tip": "^0.7.1",
+    "countUp.js": "^1.0.1"
+  },
+  "resolutions": {
+    "d3": "3.5.17"
+  }
+}

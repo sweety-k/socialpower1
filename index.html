@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title></title>
     <link rel="stylesheet" href="css/main.css">
-    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
     <style>      
     </style>
 </head>
@@ -127,7 +127,7 @@
   function convertTime(serverdate) { return new Date(serverdate + " UTC"); }
   function shortDate(d){ return d3.time.format("%d-%b-%y")(d); }
   
-  $.getJSON('data/'+user+'_hourwise7.js')
+  $.getJSON('data/'+user+'_hourwise8.js')
     .done(function(data){
       followers_data = {}, followers_average = [], tweets_data = {}, tweets_average = [];
       data = _.sortBy(data, 'date-time');
