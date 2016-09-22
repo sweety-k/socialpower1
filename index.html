@@ -6,7 +6,7 @@
     <title></title>
     <link rel="stylesheet" href="css/main.css">
     <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
-    <style>      
+    <style>
     </style>
 </head>
 <body>
@@ -50,7 +50,7 @@
   </div>
 </div>
 
-<script id="followers_count" type="text/html">  
+<script id="followers_count" type="text/html">
   <div class="element-item" style="background-color:white;width:100px">
     <p class="modipic"><img src="img/<%=user%>.jpg" class="img-rounded" width="100%" height="100%" /></p>
   </div>
@@ -121,24 +121,27 @@
       f_count = _.template($('#followers_count').html()),
       t_count = _.template($('#tweets_count').html()),
       fv_count = _.template($('#favorites_count').html()),
-      user = decodeURIComponent(window.location.search.split('=')[1]),
-      round = d3.format(".0f");    
+      round = d3.format(".0f"),
+      //user = decodeURIComponent(window.location.search.split('=')[1]),
+      user = 'narendramodi',
+      hoursewise_data_location = 'data/'+user+'_hourwise.js',
+      tweets_data_location = 'data/'+user+'_tweets.js';
 
   function convertTime(serverdate) { return new Date(serverdate + " UTC"); }
   function shortDate(d){ return d3.time.format("%d-%b-%y")(d); }
-  
-  $.getJSON('data/'+user+'_hourwise8.js')
+
+  $.getJSON(hoursewise_data_location)
     .done(function(data){
       followers_data = {}, followers_average = [], tweets_data = {}, tweets_average = [];
       data = _.sortBy(data, 'date-time');
       data.map(function(d){ return d['dateTime'] = convertTime(d['date-time']); });
-      
+
       groupby_date = _.groupBy(data, function(d){ return shortDate(d['dateTime']); });
-      _.values(groupby_date).map(function(d, i){ 
-          first = d[0]; 
+      _.values(groupby_date).map(function(d, i){
+          first = d[0];
           last = d.slice(-1)[0];
           followers_average.push(last['followers'] - first['followers']);
-          tweets_average.push(last['tweets'] - first['tweets']);    
+          tweets_average.push(last['tweets'] - first['tweets']);
           if(shortDate(d[0]['dateTime']) == shortDate(prev_date)){
             prev_f = d.slice(-1)[0];
           }
@@ -147,7 +150,7 @@
             today_last = d.slice(-1)[0];
             today_data = d;
             today_data.unshift(prev_f);
-          }      
+          }
       });
 
       followers_data['user'] = f1 = user;
@@ -161,30 +164,30 @@
       tweets_data['today'] = typeof today_last != 'undefined' ? today_last['tweets'] - today_first['tweets'] :0;
       tweets_data['daily_avg'] = round(d3.mean(tweets_average));
 
-      $('#d_tweets').html(t_count(tweets_data));      
+      $('#d_tweets').html(t_count(tweets_data));
 
       followers_hr = {};
       if(typeof today_data != 'undefined'){
         _.range(today_data.length).map(function(d){
           if(d < today_data.length-1){
             followers_hr[today_data[d+1]['dateTime']] = today_data[d+1]['followers'] - today_data[d]['followers'];
-          }        
+          }
         });
-        console.log(followers_hr);  
+        //console.log(followers_hr);
       }
 
     });
 
-  $.getJSON('data/'+user+'_tweets.js')
+  $.getJSON(tweets_data_location)
     .done(function(data){
       favorites_data = {};
       data = _.sortBy(data, 'created_at');
       favorites_data['avg_retweets'] = round(d3.mean(_.pluck(data, 'retweet_count')));
       favorites_data['avg_favorites'] = round(d3.mean(_.pluck(data, 'favorite_count')));
-      
+
       $('#d_favorites').html(fv_count(favorites_data));
 
-    });    
+    });
 </script>
 <script>
   var options = {
@@ -194,18 +197,25 @@
       decimal : '.',
       prefix : '',
       suffix : ''
-    };    
+    };
 
-    //console.log(d3.select('#followers'));
-    //var followers = new CountUp("followers", 0, followers_data['total'], 0, 3.5, options);
-    
-    // var today_followers = new CountUp("todaysfollowers", 0, {{sum(todays_followers)}}, 0, 3.5, options);
-    // var avg_followers = new CountUp("avgfollowers", 0, {{sofar}}, 0, 3.5, options);
-    // var tweets = new CountUp("tweetsnumber", 0, {{todays_data['tweets'][-1]}}, 0, 3.5, options);
-    // followers.start();
-    // today_followers.start();
-    // tweets.start();
-    // avg_followers.start();      
+  setTimeout(function(){
+    followers_val = d3.select('#followers').text();
+    todays_followers_val = d3.select('#todaysfollowers').text();
+    avgfollowers_val = d3.select('#avgfollowers').text();
+    tweetsnumber_val = d3.select('#tweetsnumber').text();
+
+    var followers = new CountUp("followers", 0, followers_val, 0, 3.5, options);
+    var today_followers = new CountUp("todaysfollowers", 0, todays_followers_val, 0, 3.5, options);
+    var avg_followers = new CountUp("avgfollowers", 0, avgfollowers_val, 0, 3.5, options);
+    var tweets = new CountUp("tweetsnumber", 0, tweetsnumber_val, 0, 3.5, options);
+
+    followers.start();
+    today_followers.start();
+    avg_followers.start();
+    tweets.start();
+
+  }, 100);
 </script>
 </body>
 </html>

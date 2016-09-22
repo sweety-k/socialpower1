@@ -1,0 +1,18 @@
+app:
+    listen:
+        port: 9999
+    settings:
+        auth: False
+        autoreload: True
+        debug: False
+    browser: /
+
+url:
+    root:
+        pattern: /
+        handler: FileHandler
+        kwargs:
+            path: index.html
+
+# import:
+#     subdirectories: '*/gramex.yaml'
