@@ -15,7 +15,7 @@ Installation
 
 1. Run `bower install` after cloning the repo to download dependencies
 2. Data files are available in share.gramener.com :
-   - hourwise data => https://share.gramener.com/data/public/5a52e6
+   - hourwise data => https://share.gramener.com/data/public/7a3e01
    - tweets data => https://share.gramener.com/data/public/d26a65
    - download data files from share.gramener.com and place them inside data folder
 
