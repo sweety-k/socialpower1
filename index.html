@@ -3,8 +3,9 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title></title>
+    <title>Social Power 1.0</title>
     <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
     <style>
     </style>
@@ -45,7 +46,36 @@
   </div>
   <div class="row">
     <div class="col-md-12">
+      <h4>Twitter Followers gained every hour on <span class="today italic"></span></h4>
       <div id="d_followers_hr_bars"></div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <h4>Twitter Followers gained every day and week</h4>
+      <div id="d_followers_calender"></div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <h4>Twitter Followers gained every Month</h4>
+      <div id="d_followers_month_bars"></div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <!-- <h4>Tweets by Mr Narendra Modi - Responses</h4> -->
+      <div id="d_"></div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6 col-sm-12">
+      <!-- <h4>Tweets by Mr Narendra Modi - Content</h4> -->
+      <div id="d_"></div>
+    </div>
+    <div class="col-md-6 col-sm-12">
+      <!-- <h4>Most Retweeted</h4> -->
+      <div id="d_"></div>
     </div>
   </div>
 </div>
@@ -113,6 +143,10 @@
 <script src="bower_components/d3/d3.min.js"></script>
 <script src="bower_components/underscore/underscore-min.js"></script>
 <script src="bower_components/countUp.js/dist/countUp.min.js"></script>
+<script src="js/d3tip.js"></script>
+<script src="js/linechart.js"></script>
+<script src="js/calendarmap.js"></script>
+<script src="js/barchart.js"></script>
 
 <script>
   var current_date = new Date(),
@@ -127,30 +161,33 @@
       hoursewise_data_location = 'data/'+user+'_hourwise.js',
       tweets_data_location = 'data/'+user+'_tweets.js';
 
-  function convertTime(serverdate) { return new Date(serverdate + " UTC"); }
-  function shortDate(d){ return d3.time.format("%d-%b-%y")(d); }
+  var convertTime = function(serverdate) { return new Date(serverdate + " UTC"); },
+      shortDate = d3.time.format("%d-%b-%y"),
+      monthYearDate = d3.time.format("%b-%Y");
 
   $.getJSON(hoursewise_data_location)
     .done(function(data){
-      followers_data = {}, followers_average = [], tweets_data = {}, tweets_average = [];
+      var followers_data = {}, followers_average = [], tweets_data = {}, tweets_average = [], follwers_week = [];
       data = _.sortBy(data, 'date-time');
       data.map(function(d){ return d['dateTime'] = convertTime(d['date-time']); });
 
       groupby_date = _.groupBy(data, function(d){ return shortDate(d['dateTime']); });
       _.values(groupby_date).map(function(d, i){
-          first = d[0];
-          last = d.slice(-1)[0];
-          followers_average.push(last['followers'] - first['followers']);
-          tweets_average.push(last['tweets'] - first['tweets']);
-          if(shortDate(d[0]['dateTime']) == shortDate(prev_date)){
-            prev_f = d.slice(-1)[0];
-          }
-          if(shortDate(d[0]['dateTime']) == shortDate(current_date)){
-            today_first = d[0];
-            today_last = d.slice(-1)[0];
-            today_data = d;
-            today_data.unshift(prev_f);
-          }
+          var first = d[0],
+              last = d.slice(-1)[0],
+              diff = last['followers'] - first['followers'];
+              followers_average.push(diff);
+              tweets_average.push(last['tweets'] - first['tweets']);
+              follwers_week.push({'date': d.slice(-1)[0].dateTime, 'followers': diff });
+              if(shortDate(d[0]['dateTime']) == shortDate(prev_date)){
+                prev_f = d.slice(-1)[0];
+              }
+              if(shortDate(d[0]['dateTime']) == shortDate(current_date)){
+                today_first = d[0];
+                today_last = d.slice(-1)[0];
+                today_data = d;
+                today_data.unshift(prev_f);
+              }
       });
 
       followers_data['user'] = f1 = user;
@@ -166,16 +203,25 @@
 
       $('#d_tweets').html(t_count(tweets_data));
 
-      followers_hr = {};
+      var followers_hr = [];
       if(typeof today_data != 'undefined'){
         _.range(today_data.length).map(function(d){
           if(d < today_data.length-1){
-            followers_hr[today_data[d+1]['dateTime']] = today_data[d+1]['followers'] - today_data[d]['followers'];
+            followers_hr.push({'date': today_data[d+1]['dateTime'],
+                               'followers': today_data[d+1]['followers'] - today_data[d]['followers']});
           }
         });
-        //console.log(followers_hr);
       }
 
+      var followers_month = [];
+      groupby_month = _.groupBy(data, function(d){ return monthYearDate(d['dateTime']); });
+      _.values(groupby_month).map(function(d, i){
+        followers_month.push({'month': monthYearDate(d[0].dateTime), 'followers': d.slice(-1)[0].followers - d[0].followers});
+      });
+
+      linechart(followers_hr,'#d_followers_hr_bars');
+      calendarmap(follwers_week,'#d_followers_calender');
+      barchart(followers_month, '#d_followers_month_bars');
     });
 
   $.getJSON(tweets_data_location)
@@ -215,7 +261,7 @@
     avg_followers.start();
     tweets.start();
 
-  }, 100);
+  }, 500);
 </script>
 </body>
 </html>

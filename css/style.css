@@ -1,0 +1,103 @@
+body {
+    font: 10px sans-serif;
+}
+.italic {
+    font-style: italic;
+}
+/* d3-tip */
+.d3-tip {
+  line-height: 1;
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  border-radius: 2px;
+}
+
+/* Creates a small triangle extender for the tooltip */
+.d3-tip:after {
+  box-sizing: border-box;
+  display: inline;
+  font-size: 8px;
+  width: 100%;
+  line-height: 1;
+  color: rgba(0, 0, 0, 0.8);
+  content: "\25BC";
+  position: absolute;
+  text-align: center;
+}
+
+/* Style northward tooltips differently */
+.d3-tip.n:after {
+  margin: -1px 0 0 0;
+  top: 100%;
+  left: 0;
+}
+/* d3-tip */
+/* line */
+.axis path,
+.axis line {
+    fill: none;
+    stroke: none;
+}
+.line {
+    fill: none;
+    stroke: steelblue;
+    stroke-width: 1.5px;
+}
+.x.axis text, .y.axis text{
+    font-size: 0.7em;
+}
+.y.axis path{
+    stroke: #000;
+    shape-rendering: crispEdges;
+}
+.y.axis line{
+    fill:none;
+    stroke:#ddd;
+    stroke-width:1.5px;
+    shape-rendering: crispEdges;
+}
+/* line */
+/* calendar */
+.day {
+  fill: none;
+  stroke: none;
+}
+.month{
+  fill: none;
+  stroke: #000;
+  stroke-width: 2px;
+  shape-rendering: crispEdges;
+  cursor: pointer;
+}
+.dayLable{
+  fill: #000;
+  font-size: 0.8em;
+  text-anchor:right;
+  cursor: pointer;
+}
+.weekly_bars_rects, .wow_bars_rects{
+  fill:#ddd;
+}
+.weekly_bars_vals, .wow_bars_vals{
+  font-size: 0.7em;
+}
+/* calendar */
+/* barchart */
+.xBars, .yBars {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+.xBars.barAxis text, .yBars.barAxis text{
+    color: #ddd;
+    font-size: 0.8em;
+    font-weight: normal;
+}
+.yBars line{
+    fill:none;
+    stroke:#ddd;
+    stroke-width:1px;
+    shape-rendering: crispEdges;
+}
+/* barchart */
