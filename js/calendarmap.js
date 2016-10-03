@@ -60,7 +60,7 @@ var calendarmap = function(data, id){
 
     var tip_cal = d3.tip()
             .attr('class', 'd3-tip')
-            .offset([-10, 0])
+            .offset([-5, 0])
             .html(function(d){
                 return followers[format(d)] != undefined ?
                         "<div> Date: "+ format(d) +" ("+weekDays[d.getDay()]+")<div>"+

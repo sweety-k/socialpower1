@@ -38,47 +38,111 @@
 
 <div class="container">
   <div class="row">
-    <div class="col-md-12">
+    <div class="col-lg-12 col-md-12 col-xs-12">
       <div id="d_followers"></div>
       <div id="d_tweets"></div>
       <div id="d_favorites"></div>
     </div>
   </div>
+
   <div class="row">
-    <div class="col-md-12">
+    <div class="col-lg-12 col-md-12 col-xs-12">
       <h4>Twitter Followers gained every hour on <span class="today italic"></span></h4>
       <div id="d_followers_hr_bars"></div>
     </div>
   </div>
+
   <div class="row">
-    <div class="col-md-12">
+    <div class="col-lg-12 col-md-12 col-xs-12">
       <h4>Twitter Followers gained every day and week</h4>
       <div id="d_followers_calender"></div>
     </div>
   </div>
+
   <div class="row">
-    <div class="col-md-12">
+    <div class="col-lg-12 col-md-12 col-xs-12">
       <h4>Twitter Followers gained every Month</h4>
       <div id="d_followers_month_bars"></div>
     </div>
   </div>
+
   <div class="row">
-    <div class="col-md-12">
-      <!-- <h4>Tweets by Mr Narendra Modi - Responses</h4> -->
+    <div class="col-lg-12 col-md-12 col-xs-12">
+      <h4>Tweets by Mr Narendra Modi - Responses</h4>
+      <div class="legend">Collection of 1000 Tweets between <span class="italic fromDate1kTweets"></span> and <span class="italic toDate1kTweets"></span></div>
+      <div class="legend">Each bubble is a tweet. Color is an approximate indication of the category (as in the bars above). <span class="italic">Click</span> on a bubble to view the tweet.</div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-lg-6 col-md-7 col-xs-12">
+      <div style="padding-top:10px;">
+        <span>Bucket tweets based on &nbsp;</span>
+        <div class="btn-group">
+              <button class="btn btn-default active">Retweets</button>
+              <button class="btn btn-default">Favorites</button>
+              <button class="btn btn-default">categories</button>
+              <button class="btn btn-default disabled">Sentiment</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-3 col-md-3 col-xs-5" >
+      <div style="padding-top:10px;">
+        <div class="input-group">
+          <input type="text" class="form-control" placeholder="Search ... for ex Modi">
+          <span class="input-group-btn">
+            <button class="btn btn-default" type="button">Clear</button>
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-3 col-md-1 col-xs-7">
+      <div>&nbsp;</div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12 col-xs-12">
+      <div style="padding:10px 0;">
+        <div id="bubblechart_legend"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6 col-xs-12">
+      <div id="d_tweets_bubbles"></div>
+    </div>
+    <div class="col-md-6 col-xs-12">
+      <div id="d_tweets_wordcloud"></div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6 col-xs-12">
+      <h4>Tweets by Mr Narendra Modi - Content</h4>
+      <div class="legend">Collection of 1000 Tweets between <span class="italic fromDate1kTweets"></span> and <span class="italic toDate1kTweets"></span></div>
+      <div id="d_"></div>
+    </div>
+    <div class="col-md-6 col-xs-12">
+      <h4>Most Retweeted</h4>
       <div id="d_"></div>
     </div>
   </div>
+
   <div class="row">
-    <div class="col-md-6 col-sm-12">
-      <!-- <h4>Tweets by Mr Narendra Modi - Content</h4> -->
-      <div id="d_"></div>
-    </div>
-    <div class="col-md-6 col-sm-12">
-      <!-- <h4>Most Retweeted</h4> -->
-      <div id="d_"></div>
+    <div class="col-lg-12 col-md-12 col-xs-12">
+      <div style="padding-top:200px">&nbsp;</div>
+      <footer>
+        <p>Powered by <a href="https://gramener.com/" target="_blank" class="display"><span style="font-size:80%">GRAMENER.COM</span></a></p>
+      </footer>
     </div>
   </div>
 </div>
+
+
 
 <script id="followers_count" type="text/html">
   <div class="element-item" style="background-color:white;width:100px">
@@ -147,6 +211,9 @@
 <script src="js/linechart.js"></script>
 <script src="js/calendarmap.js"></script>
 <script src="js/barchart.js"></script>
+<script src="js/bubblechart.js"></script>
+<script src="js/d3cloud.js"></script>
+<script src="js/wordcloud.js"></script>
 
 <script>
   var current_date = new Date(),
@@ -228,12 +295,30 @@
     .done(function(data){
       favorites_data = {};
       data = _.sortBy(data, 'created_at');
-      favorites_data['avg_retweets'] = round(d3.mean(_.pluck(data, 'retweet_count')));
-      favorites_data['avg_favorites'] = round(d3.mean(_.pluck(data, 'favorite_count')));
+
+      //favorites_data['avg_retweets'] = round(d3.mean(_.pluck(data, 'retweet_count')));
+      //favorites_data['avg_favorites'] = round(d3.mean(_.pluck(data, 'favorite_count')));
+
+      rt = data.filter(function(d){ return d.text.split(' ')[0] != 'RT'; });
+
+      favorites_data['avg_retweets'] = round(d3.mean(_.pluck(rt, 'retweet_count')));
+      favorites_data['avg_favorites'] = round(d3.mean(_.pluck(rt, 'favorite_count')));
 
       $('#d_favorites').html(fv_count(favorites_data));
 
+      var legends = ["States", "Schemes & Development", "Greetings", "Foreign Relations", "Activity Reporting"];
+
+      bubblechart(data, legends, '#d_tweets_bubbles');
+      wordcloud(data, '#d_tweets_wordcloud');
     });
+</script>
+<script>
+  $(function () {
+    $('.btn').popover({
+      html:'true',
+      container: 'body'
+    });
+  });
 </script>
 <script>
   var options = {

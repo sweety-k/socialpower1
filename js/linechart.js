@@ -3,16 +3,19 @@ var linechart = function(data, id){
         width = 1024 - margin.left - margin.right,
         height = 200 - margin.top - margin.bottom;
 
-    var formatDate = d3.time.format("%I:%M %p"),
-        formatDate1 = d3.time.format("%I:%M"),
+    var formatTime = d3.time.format("%I:%M %p"),
+        formatTime1 = d3.time.format("%I:%M"),
         asOfFormatDate = d3.time.format("%d-%b-%Y (%A)");
 
-    var forYaxis = d3.min(data, function(d) { return d.followers; }) ? d3.extent(data, function(d) { return d.followers; }) : [0, 10];
+    var forYaxis = d3.min(data, function(d) { return d.followers*0.8; }) ? d3.extent(data, function(d) { return d.followers*1.1; }) : [0, 10];
 
     var t1 = new Date(),
-        t2 = new Date();
+        t2 = new Date(),
+        tx = new Date();
         t1.setHours(0,0,0);
         t2.setHours(23,0,0);
+        tx.setDate(tx.getDate() - 1);
+        tx.setHours(23,0,0);
 
     d3.select(".today").text(asOfFormatDate(t1));
 
@@ -32,16 +35,21 @@ var linechart = function(data, id){
     var yAxis = d3.svg.axis()
         .scale(y)
         .orient("left")
-        .ticks(5)
+        .ticks(10)
         .innerTickSize(-width)
         .outerTickSize(0);
 
    var tip_line = d3.tip()
         .attr('class', 'd3-tip')
-        .offset([-10, 0])
-        .html(function(d) {
-          return "<span style='color:red'>" + d.followers + "</span> Followers gained";
-        })
+        .offset([-5, 0])
+        .html(function(d, i){
+          if(i != 'null'){
+            return "<div>"+i+" Followers: " + d.followers +"</div>";
+          }else{
+            return "<div>Time: " + formatTime(d.date) +"</div>" +
+                 "<div style='margin-top:5px;'>Followers gained: " + d.followers +"</div>";
+          }
+        });
 
     var line = d3.svg.line()
         .x(function(d) { return x(d.date); })
@@ -58,13 +66,18 @@ var linechart = function(data, id){
 
     svg_line.call(tip_line);
 
-    svg_line.append("g")
-      .attr("class", "x axis")
-      .attr("transform", "translate(0," + height + ")")
-      .call(xAxis)
-        .selectAll("text")
-          .text(function(d){ return d.getHours() == 12 ? formatDate(d) : formatDate1(d); })
-          .style("font-weight", function(d){ return d.getHours() == 12 ? "bold" : ""; });
+    svg_line.append("g").selectAll(".time_tooltip")
+      .data(d3.time.hours(tx, t2))
+      .enter().append("rect")
+      .attr("x", function(d){ return x(d)-20; })
+      .attr("y", 0)
+      .attr("width", 40)
+      .attr("height", y.domain()[1])
+      .attr("fill", "#fff")
+      .data(data)
+      .on("mouseover", function(d){ tip_line.show(d,'null'); })
+      .on("mouseout", tip_line.hide);
+
 
     svg_line.append("g")
       .attr("class", "y axis")
@@ -77,6 +90,14 @@ var linechart = function(data, id){
         .style("text-anchor", "start")
         .text("Followers")
         .style("font-size","0.8em");
+
+    svg_line.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis)
+        .selectAll("text")
+          .text(function(d){ return d.getHours() == 12 ? formatTime(d) : formatTime1(d); })
+          .style("font-weight", function(d){ return d.getHours() == 12 ? "bold" : ""; });
 
     var line = svg_line.append("path")
         .datum(data)
@@ -106,6 +127,8 @@ var linechart = function(data, id){
       .enter().append("circle")
       .attr("cx", function(d){ return d != undefined ? x(d.date) : x(0);})
       .attr("cy", function(d){ return d != undefined ? y(d.followers) : y(0);})
-      .attr("r", 1.5)
-      .attr("fill", "#000");
+      .attr("r", 1.8)
+      .attr("fill", "#000")
+      .on("mouseover", function(d, i){ i==0 ? tip_line.show(d,'Minimum') : tip_line.show(d,'Maximum'); })
+      .on("mouseout", tip_line.hide);
 };

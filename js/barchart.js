@@ -20,13 +20,13 @@ var barchart = function(data, id){
     var yAxisBars = d3.svg.axis()
         .scale(yBars)
         .orient("left")
+        .ticks(5)
         .innerTickSize(-width)
         .outerTickSize(0);
 
-
     var tip_bar = d3.tip()
             .attr('class', 'd3-tip')
-            .offset([-10, 0])
+            .offset([-5, 0])
             .html(function(d){
                 return d.followers != undefined ?
                         "<div> Month: "+ d.month +"<div>"+
@@ -44,16 +44,14 @@ var barchart = function(data, id){
         svg_bar.append("g")
             .attr("transform", "translate("+ (margin.left) +","+ 0 +")")
             .call(yAxisBars)
-            .attr("class", "yBars barAxis")
+            .attr("class", "yBars axisBars")
                 .selectAll("text")
-                    .text(function(d){ return d3.format(",s")(d); })
-                    .attr("font-size", "0.6em")
-                    .attr("font-weight", "normal");
+                    .text(function(d){ return d3.format(",s")(d); });
 
         svg_bar.append("g")
             .attr("transform", "translate("+ (margin.left) +","+ (height) +")")
             .call(xAxisBars)
-            .attr("class", "xBars barAxis");
+            .attr("class", "xBars axisBars");
 
         month_bars = svg_bar.selectAll('.month_follow_bars')
              .data(data);
